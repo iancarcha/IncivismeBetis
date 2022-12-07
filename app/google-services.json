@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "309889665674",
+    "project_id": "incivismebetis",
+    "storage_bucket": "incivismebetis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309889665674:android:804c3923bf291e5aeb7b73",
+        "android_client_info": {
+          "package_name": "com.example.incivismebetis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309889665674-q89qqina8aqafh16pl7egnb9p9663dtc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARO6rBDqE0fH7aC--ct86Vw0GxW4nkvuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309889665674-q89qqina8aqafh16pl7egnb9p9663dtc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
