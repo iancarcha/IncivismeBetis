@@ -4,8 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,10 +12,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.incivismebetis.Incidencia;
 import com.example.incivismebetis.SharedViewModel;
 import com.example.incivismebetis.databinding.FragmentDashboardBinding;
 import com.example.incivismebetis.databinding.IncidenciasBinding;
-import com.example.incivismebetis.ui.Incidencia;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseUser;
@@ -58,7 +57,7 @@ public class DashboardFragment extends Fragment {
                 binding.rvIncidencies.setLayoutManager(
                 new LinearLayoutManager(requireContext())
                 );
-
+                return;
 
             }
         });
@@ -91,7 +90,7 @@ public class DashboardFragment extends Fragment {
         public IncidenciaViewholder onCreateViewHolder(
                 @NonNull ViewGroup parent, int viewType
         ) {
-            return new IncidenciaViewholder(IncidenciasBinding.inflate(
+            return new IncidenciaViewholder(NotificationsRowBinding.inflate(
                     LayoutInflater.from(parent.getContext()),
                     parent, false));
         }

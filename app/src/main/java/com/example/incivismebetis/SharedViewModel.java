@@ -2,16 +2,9 @@ package com.example.incivismebetis;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -24,40 +17,51 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 
 public class SharedViewModel extends AndroidViewModel {
 
-
+    private static final MutableLiveData<String> currentAddress = new MutableLiveData<>();
     private final Application app;
-    private static final MutableLiveData<String> currentAddress = new MutableLiveData<>();  
+    private final MutableLiveData<FirebaseUser> user = new MutableLiveData<>();
     private final MutableLiveData<String> checkPermission = new MutableLiveData<>(); 
     private final MutableLiveData<String> buttonText = new MutableLiveData<>();      
     private final MutableLiveData<Boolean> progressBar = new MutableLiveData<>();
-    private final MutableLiveData<LatLng> currentLatLng = new MutableLiveData<>();
+    private MutableLiveData<LatLng> currentLatLng = new MutableLiveData<>();
+    private final LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            if (locationResult != null) {
+                fetchAddress(locationResult.getLastLocation());
+            }
+        }
+    };
 
-    private boolean mTrackingLocation;
     FusedLocationProviderClient mFusedLocationClient;
+    private boolean mTrackingLocation;
 
     public SharedViewModel(@NonNull Application application) {
         super(application);
 
         this.app = application;
     }
+    public static LiveData<String> getCurrentAddress() {
+        return currentAddress;
+    }
 
+    public MutableLiveData<LatLng> getCurrentLatLng() {
+        return currentLatLng;
+    }
     void setFusedLocationClient(FusedLocationProviderClient mFusedLocationClient) {
         this.mFusedLocationClient = mFusedLocationClient;
     }
-
-    public static LiveData<String> getCurrentAddress() { 
-        return currentAddress;
+    public MutableLiveData<LatLng> getCurrentUser () {
+        if (currentLatLng == null){
+            currentLatLng = new MutableLiveData<>();
+        }
+        Log.e("sharedView", "ShareViewModel "+currentLatLng.getValue());
+        return currentLatLng;
     }
+
 
     public MutableLiveData<String> getButtonText() {
         return buttonText;
@@ -67,18 +71,24 @@ public class SharedViewModel extends AndroidViewModel {
         return progressBar;
     }
 
+    private void fetchAddress(Location location) {
+
+
+        try {
+            LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
+            currentLatLng.postValue(latlng);
+
+        } catch (Exception ioException) {
+            ioException.printStackTrace();
+        }
+
+    }
+
     LiveData<String> getCheckPermission() { 
         return checkPermission;
     }
 
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            if (locationResult != null) {
-                fetchAddress(locationResult.getLastLocation());
-            }
-        }
-    };
+
 
     private LocationRequest getLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
@@ -124,11 +134,6 @@ public class SharedViewModel extends AndroidViewModel {
             buttonText.setValue("Comença a seguir la ubicació");
         }
     }
-    private MutableLiveData<FirebaseUser> user = new MutableLiveData<>();;
-
-    public MutableLiveData<LatLng> getCurrentLatLng() {
-        return currentLatLng;
-    }
 
     public LiveData<FirebaseUser> getUser() {
         return user;
@@ -138,25 +143,5 @@ public class SharedViewModel extends AndroidViewModel {
         user.postValue(passedUser);
     }
 
-    private void fetchAddress(Location location) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
 
-        Geocoder geocoder = new Geocoder(app.getApplicationContext(), Locale.getDefault());
-
-        executor.execute(() -> {
-            // Aquest codi s'executa en segon pla
-            List<Address> addresses = null;
-            String resultMessage = "";
-
-            try {
-                LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
-                currentLatLng.postValue(latlng);
-
-            } catch (Exception ioException) {
-                resultMessage = "Servei no disponible";
-                Log.e("INCIVISME", resultMessage, ioException);
-            }
-        });
-    }
 }

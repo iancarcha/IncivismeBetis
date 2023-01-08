@@ -1,4 +1,4 @@
-package com.example.incivismebetis.ui;
+package com.example.incivismebetis;
 
 public class Incidencia {
     String latitud;
